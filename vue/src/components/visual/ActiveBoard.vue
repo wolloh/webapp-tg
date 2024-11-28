@@ -45,4 +45,14 @@ export default {
     align-items: center;
   }
 }
+
+@media(max-width: 560px) or (max-height: 580px){
+  .board {
+    padding: 10px;
+    
+    &__cards {
+      max-width: 286px;
+    }
+  }
+}
 </style>

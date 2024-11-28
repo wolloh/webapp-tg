@@ -2,10 +2,10 @@
   <div class="player">
     <div class="player__cards">
       <GameCard 
-        v-for="(card, i) in cards"
-        :key="i"
-        :card="card"
-        :face-down="isBot"
+        v-for="(card, i) in cards" 
+        :key="i" 
+        :card="card" 
+        :face-down="isBot" 
       />
     </div>
   </div>
@@ -45,8 +45,18 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    max-width: 1000px;
+    max-width: 1010px;
     margin: auto;
+  }
+}
+
+@media(max-width: 560px) or (max-height: 580px) {
+  .player {
+    padding: 10px 15px;
+
+    &__cards {
+      margin-bottom: 32px;
+    }
   }
 }
 </style>

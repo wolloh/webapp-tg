@@ -47,8 +47,8 @@ h2, h4 {
 .game {
   width: 100%;
   height: 100vh;
-  min-width: 468px;
-  min-height: 738px;
+  min-width: 302px;
+  min-height: 438px;
   display: flex;
   flex-direction: column;
 }
