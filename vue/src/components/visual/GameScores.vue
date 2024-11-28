@@ -16,7 +16,6 @@ export default {
 .scores {
   &__player, &__delimeter, &__bot {
     display: inline;
-    font-size: 32px;
   }
 
   &__delimeter {

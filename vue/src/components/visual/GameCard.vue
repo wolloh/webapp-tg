@@ -55,7 +55,7 @@ export default {
   background-color: #F3E9D2;
   border: solid 2px #999488;
   border-radius: 12px;
-  margin-right: -13px;
+  box-sizing: border-box;
 
   &__content {
     height: inherit;
@@ -81,11 +81,17 @@ export default {
     }
   }
 
-  &--active:hover {
-    z-index: 3;
-    min-height: 170px;
-    max-height: 435px;
-    cursor: pointer;
+  &--active {
+    margin-right: -13px;
+    margin-top: 4px;
+
+    &:hover {
+      z-index: 3;
+      min-height: 170px;
+      max-height: 435px;
+      margin-top: -8px;
+      cursor: pointer;
+    }
   }
 
   &--face-down {
@@ -94,6 +100,67 @@ export default {
     border: solid 2px #804651;
     border-radius: 8px;
     margin-right: 5px;
+  }
+}
+
+@media(max-width: 1015px) or (max-height: 766px) {
+  .card {
+    min-height: 133px;
+    max-height: 380px;
+    border-radius: 8px;
+
+    &__content {
+      font-size: 28px;
+
+      &--small {
+        font-size: 20px;
+      }
+    }
+
+    &--active {
+      margin-right: -11px;
+
+      &:hover {
+        min-height: 130px;
+        max-height: 380px;
+      }
+    }
+
+    &--face-down {
+      min-height: 75px;
+      border-radius: 6px;
+      margin-right: -9px;
+    }
+  }
+}
+
+@media(max-width: 560px) or (max-height: 580px) {
+  .card {
+    min-height: 96px;
+    max-height: 210px;
+
+    &__content {
+      font-size: 20px;
+
+      &--small {
+        font-size: 15px;
+      }
+    }
+
+    &--active {
+      margin-bottom: -32px;
+
+      &:hover {
+        min-height: 100px;
+        max-height: 350px;
+      }
+    }
+
+    &--face-down {
+      min-height: 52px;
+      margin-right: -11px;
+      margin-bottom: -32px;
+    }
   }
 }
 </style>
