@@ -2,6 +2,7 @@
 import { Player } from './player';
 import { DECK, WinnerStates, TurnStates, MAX_CARDS_IN_HAND, POINTS_TO_WIN } from '@/core/constants';
 export class GameEngine {
+    instance;
     player = new Player();
     bot = new Player();
     board = [];
@@ -11,14 +12,18 @@ export class GameEngine {
     winner = WinnerStates.NONE;
 
     constructor(){ 
-       var shuffledCards = this.shuffleCards();
-
+       this.instance = this;
+       var shuffledCards = this.shuffleCards(DECK);
+        console.log(shuffledCards);
+        console.log('123')
        this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
        var botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
        this.bot.cards = botCards.toReversed();
     }
 
-
+    getInstance(){
+        return this.instance || new GameEngine();
+    }
     makePlayerMove(cardIndex){
         if(this.Turn == TurnStates.BOT){
             return; // Bot's turn, skip it.
@@ -27,7 +32,7 @@ export class GameEngine {
         this.board = this.player.cards[cardIndex];
         var playerCardRank = this.player.playCard(cardIndex);
 
-        var botCardRank = makeBotMove();
+        var botCardRank = this.makeBotMove();
 
         if(playerCardRank > botCardRank){
             this.player.gameScore++;
