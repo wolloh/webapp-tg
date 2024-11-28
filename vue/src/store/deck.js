@@ -4,7 +4,7 @@ import { cardsNames } from '@/engine/constants'
 export default {
   namespaced: true,
   state: {
-    cards: new DeckBuilder(22, 1, 15, cardsNames).generateDeck(),
+    cards: new DeckBuilder(20, 1, 15, cardsNames).generateDeck(),
   },
   getters: {
     getDeck: (state) => state.cards,

@@ -1,8 +1,8 @@
 <template>
   <div class="game-field">
-    <PlayerHand :cards="this.botCards" :is-bot="true"/>
+    <PlayerHand :cards="botCards" :is-bot="true"/>
     <ActiveBoard :cards="cardsOnBoard"/>
-    <PlayerHand :cards="this.playerCards"/>
+    <PlayerHand :cards="playerCards"/>
   </div>
 </template>
 
@@ -19,10 +19,10 @@ export default {
   },
   data() {
     return {
-      handSize: 11,
-      botCards: null,
-      playerCards: null,
-      cardsOnBoard: null
+      handSize: 10,
+      botCards: [],
+      playerCards: [],
+      cardsOnBoard: []
     }
   },
   created() {
