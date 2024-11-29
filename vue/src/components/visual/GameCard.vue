@@ -2,6 +2,7 @@
   <div 
     class="card" 
     :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard }"
+    @click="makePlayerMove()"
   >
     <div 
       v-if="!faceDown" 
@@ -24,6 +25,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: "GameCard",
   props: {
@@ -41,6 +44,18 @@ export default {
       type: Boolean,
       default: false,
       required: false
+    }
+  },
+  computed: {
+    ...mapGetters('game_engine', [
+      'getEngine',
+    ])
+  },
+  methods: {
+    makePlayerMove() {
+      if (!this.faceDown && !this.onBoard ) {
+        this.getEngine.makePlayerMove(this.card.id)
+      }
     }
   }
 }

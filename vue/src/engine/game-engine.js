@@ -8,22 +8,22 @@ export class GameEngine {
     board = [];
     deck = DECK
     Turn = TurnStates.PLAYER;
-    MAX_CARDS_IN_HAND = 10;
     winner = WinnerStates.NONE;
 
     constructor(){ 
-       this.instance = this;
-       var shuffledCards = this.shuffleCards(DECK);
+        this.instance = this;
+        var shuffledCards = this.shuffleCards(DECK);
         console.log(shuffledCards);
-        console.log('123')
-       this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
-       var botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
-       this.bot.cards = botCards.toReversed();
+        console.log('123');
+        this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
+        var botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
+        this.bot.cards = botCards.toReversed();
     }
 
     getInstance(){
         return this.instance || new GameEngine();
     }
+
     makePlayerMove(cardIndex){
         if(this.Turn == TurnStates.BOT){
             return; // Bot's turn, skip it.
@@ -86,7 +86,6 @@ export class GameEngine {
         var botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
         this.bot.cards = botCards.toReversed();
     }
-
     
     clearBoard(){
         this.board = [];

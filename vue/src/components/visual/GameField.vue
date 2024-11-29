@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
+import { MAX_CARDS_IN_HAND } from '@/core/constants.js'
 import PlayerHand from './PlayerHand.vue';
 import ActiveBoard from './ActiveBoard.vue';
 
@@ -19,31 +20,25 @@ export default {
   },
   data() {
     return {
-      handSize: 10,
-      botCards: [],
-      playerCards: [],
-      cardsOnBoard: []
+      handSize: MAX_CARDS_IN_HAND
     }
   },
-  created() {
-    this.generateBotCards()
-    this.generatePlayerCards()
-  },
-  methods: {
-    ...mapActions('deck', [
-      'popCards'
+  computed: {
+    ...mapGetters('game_engine', [
+      'getPlayerCards',
+      'getBotCards',
+      'getCardsOnBoard',
     ]),
-    generateBotCards() {
-      this.popCards(this.handSize).then((response) => {
-        this.botCards = response
-      })
+    botCards() {
+      return this.getBotCards
     },
-    generatePlayerCards() {
-      this.popCards(this.handSize).then((response) => {
-        this.playerCards = response
-      })
+    playerCards() {
+      return this.getPlayerCards
+    },
+    cardsOnBoard() {
+      return this.getCardsOnBoard
     }
-  }
+  },
 }
 </script>
 
