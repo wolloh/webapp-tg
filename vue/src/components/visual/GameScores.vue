@@ -9,13 +9,14 @@
     <h4 class="scores__bot">
       Бот: {{ this.getBotScore }}
     </h4>
-    <ResultGameModal ref="modal" />
+    <ResultGameModal v-if="gameEnded"  ref="modal" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import ResultGameModal from '../modals/ResultGameModal.vue';
+import { WinnerStates } from '@/core/constants';
 export default {
   name: "GameScores",
   components: {
@@ -32,11 +33,14 @@ export default {
 
     getBotScore () {
       return this.getEngine.bot.gameScore;
+    },
+    gameEnded() {
+      return this.getEngine.winner != WinnerStates.NONE;
     }
   },
 
   updated() {
-    if (this.getEngine.getWinner()) {
+    if (this.getEngine.winner != WinnerStates.NONE ) {
       this.$refs.modal.show = true
     }
   }

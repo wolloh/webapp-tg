@@ -1,111 +1,89 @@
-
 import { Player } from './player';
 import { DECK, WinnerStates, TurnStates, MAX_CARDS_IN_HAND, POINTS_TO_WIN } from '@/core/constants';
+import { sleep } from '@/core/utils';
+
 export class GameEngine {
     instance;
     player = new Player();
     bot = new Player();
     board = [];
-    deck = DECK
-    Turn = TurnStates.PLAYER;
-    MAX_CARDS_IN_HAND = 10;
+    turn = TurnStates.PLAYER;
     winner = WinnerStates.NONE;
 
     constructor(){ 
        this.instance = this;
-       var shuffledCards = this.shuffleCards(DECK);
-        console.log(shuffledCards);
-        console.log('123')
+       let shuffledCards = this.shuffleCards(DECK);
        this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
-       var botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
-       this.bot.cards = botCards.toReversed();
+       let botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
+       this.bot.cards = botCards.toSorted((a,b) => a.rank < b.rank ? 1 : -1);
     }
 
     getInstance(){
         return this.instance || new GameEngine();
     }
 
-    makePlayerMove(cardIndex){
-        if(this.Turn == TurnStates.BOT){
-            return; // Bot's turn, skip it.
+    async makePlayerMove(cardId){
+        if(this.turn == TurnStates.BOT){
+            return;
         }
 
-        this.board.push(this.player.cards[cardIndex]);
-        var playerCardRank = this.player.playCard(cardIndex);
+        this.board.push(this.player.cards.find(card => card.id == cardId));
 
-        var botCardRank = this.makeBotMove();
+        let playerCard = this.player.playCard(cardId);
 
-        if(playerCardRank > botCardRank){
+        this.turn = TurnStates.BOT;
+
+        await sleep(1000);
+
+        let botCard = await this.makeBotMove();
+
+        if(playerCard.rank > botCard.rank){
             this.player.gameScore++;
         }
-        else if(playerCardRank < botCardRank){
+        else if(playerCard.rank < botCard.rank){
             this.bot.gameScore++;
         }
 
-        console.log(this.board);
+        await sleep(1000);
+
         this.CheckIfSomeOneWin();
-        this.Turn = TurnStates.PLAYER;
+        this.turn = TurnStates.PLAYER;
         this.clearBoard();
     }
 
-    makeBotMove(){
-        this.Turn = TurnStates.BOT
-        var botCard = this.bot.cards.shift();
-        this.board.push(this.bot.cards[botCard]);
-        return botCard.rank;
+    async makeBotMove(){
+        this.turn = TurnStates.BOT
+        let botCard = this.bot.cards.shift();
+        this.board.push(botCard);
+
+        return botCard;
     }
-
-    // CheckIfSomeOneWin(){
-    //     if(this.deck.length == 0){
-    //         this.winner = this.player.score == this.bot.gameScore 
-    //         ? WinnerStates.DRAW
-    //         : this.getWinner()
-    //         return;
-    //     }
-
-    //     if(this.player.score == POINTS_TO_WIN) {
-    //         this.winner = WinnerStates.PLAYER_WINS;
-    //     }
-    //     if(this.bot.score == POINTS_TO_WIN){
-    //         this.winner = WinnerStates.BOT_WIzNS;
-    //     }
-    // }
-
-    // getWinner(){
-    //     if(this.player.score > this.bot.score){
-    //         return WinnerStates.PLAYER_WINS;
-    //     }
-        
-    //     return WinnerStates.BOT_WINS;
-    // }
 
     CheckIfSomeOneWin(){
-        if(this.deck.length == 0) {
-            this.winner = this.getWinner();
-            return this.winner;
+        if(this.player.cards.length == 0) {
+            this.winner = this.findWinner();
+            return;
         }
 
-        if(this.player.score == POINTS_TO_WIN) {
+        if(this.player.gameScore == POINTS_TO_WIN) {
             this.winner = WinnerStates.PLAYER_WINS;
-            return this.winner;
         }
 
-        if(this.bot.score == POINTS_TO_WIN){
+        if(this.bot.gameScore == POINTS_TO_WIN){
             this.winner = WinnerStates.BOT_WINS;
-            return this.winner;
         }
     }
 
-    getWinner() {
-        if(this.player.score > this.bot.score) {
+    findWinner() {
+        if(this.player.gameScore > this.bot.gameScore) {
             return WinnerStates.PLAYER_WINS;
         }
         
-        else if (this.player.score == this.bot.score) {
+        else if (this.player.gameScore == this.bot.gameScore) {
             return WinnerStates.DRAW
         }
 
-        else if (this.player.score < this.bot.score) {
+        else if (this.player.gameScore < this.bot.gameScore) {
             return WinnerStates.BOT_WINS;
         }
     }
@@ -113,11 +91,13 @@ export class GameEngine {
     startNewGame(){
         this.player = new Player();
         this.bot = new Player();
-        var shuffledCards = this.shuffleCards();
+        let shuffledCards = this.shuffleCards(DECK);
 
         this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
-        var botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
+        let botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
         this.bot.cards = botCards.toReversed();
+        this.winner = WinnerStates.NONE;
+        this.turn = TurnStates.PLAYER;
     }
 
     
@@ -126,8 +106,8 @@ export class GameEngine {
     }
 
     shuffleCards(cards){
-        var j, temp;
-        for(var i = cards.length - 1; i > 0; i--){
+        let j, temp;
+        for(let i = cards.length - 1; i > 0; i--){
             j = Math.floor(Math.random()*(i + 1));
             temp = cards[j];
             cards[j] = cards[i];

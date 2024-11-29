@@ -3,7 +3,7 @@
     <div class="status-header__content">
       <div class="status-header__content__group">
         <GameScores class="status-header__content__group__scores" />
-        <h1 class="status-header__content__group__game-status">Ваш ход</h1>
+        <h1 class="status-header__content__group__game-status">{{getCurrentTurn}}</h1>
       </div>
       <svg class="status-header__content__restart-icon" viewBox="0 0 32 32">
         <path
@@ -15,13 +15,25 @@
 </template>
 
 <script>
+import { TurnStates } from '@/core/constants';
 import GameScores from './GameScores.vue';
-
+import { mapGetters } from 'vuex';
 export default {
   name: "GameStatus",
   components: {
     GameScores
-  }
+  },
+  computed: {
+    ...mapGetters('game_engine', [
+      'getEngine',
+    ]),
+    getCurrentTurn(){
+      let currentTurn = this.getEngine.turn == TurnStates.PLAYER 
+          ? 'Ваш ход'
+          : 'Ход бота'
+      return currentTurn;
+    }
+  },
 }
 
 </script>

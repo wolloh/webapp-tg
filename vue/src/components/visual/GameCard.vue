@@ -52,9 +52,9 @@ export default {
     ])
   },
   methods: {
-    makePlayerMove() {
-      if (!this.faceDown && !this.onBoard ) {
-        this.getEngine.makePlayerMove(this.card.id)
+    async makePlayerMove() {
+      if (!this.faceDown && !this.onBoard && this.getEngine.turn ) {        
+        await this.getEngine.makePlayerMove(this.card.id)
       }
     }
   }

@@ -46,13 +46,13 @@ export default {
     ]),
         getResultMessage() 
         {
-            if (this.getEngine.getWinner() === WinnerStates.PLAYER_WINS) {
+            if (this.getEngine.winner === WinnerStates.PLAYER_WINS) {
                 return 'Вы выиграли!';
             } 
-            else if (this.getEngine.getWinner() === WinnerStates.BOT_WINS) {
+            else if (this.getEngine.winner === WinnerStates.BOT_WINS) {
                 return 'Противник выиграл!';
             }
-            else if (this.getEngine.getWinner() === WinnerStates.DRAW) {
+            else if (this.getEngine.winner === WinnerStates.DRAW) {
                 return 'Ничья!';
             }
             else {
