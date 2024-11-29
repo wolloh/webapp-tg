@@ -1,6 +1,6 @@
 export class Player{
     cards = [];
-    score = 0;
+    gameScore = 0;
     handSize = 10;
 
     playCard(cardIndex){
