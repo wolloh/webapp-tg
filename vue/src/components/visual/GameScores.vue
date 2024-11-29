@@ -9,7 +9,7 @@
     <h4 class="scores__bot">
       Бот: {{ this.getBotScore }}
     </h4>
-    <ResultGameModal v-if="gameEnded"  ref="modal" />
+    <ResultGameModal v-if="gameEnded" ref="modal" />
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
   },
 
   updated() {
-    if (this.getEngine.winner != WinnerStates.NONE ) {
+    if (this.getEngine.winner != WinnerStates.NONE) {
       this.$refs.modal.show = true
     }
   }

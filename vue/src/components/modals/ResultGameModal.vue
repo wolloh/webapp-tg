@@ -8,7 +8,8 @@
         <p class="winner">
             {{this.getResultMessage}}
         </p>
-        <button class="restart-button" @click="restartGame">
+        <button class="restart-button" 
+        @click="restartGame">
             Начать заново
         </button>
       </div>
@@ -33,7 +34,6 @@ export default {
         }
     },
     methods: {
-        //Рестарт игры
         restartGame () {
             this.getEngine.startNewGame();
             this.show = false

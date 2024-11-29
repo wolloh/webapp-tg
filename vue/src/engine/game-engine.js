@@ -44,7 +44,7 @@ export class GameEngine {
             this.bot.gameScore++;
         }
 
-        await sleep(1000);
+        await sleep(1500);
 
         this.CheckIfSomeOneWin();
         this.turn = TurnStates.PLAYER;
