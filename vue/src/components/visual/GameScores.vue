@@ -1,14 +1,45 @@
 <template>
   <div class="scores">
-    <h4 class="scores__player">Вы: 5</h4>
-    <h4 class="scores__delimeter">/</h4>
-    <h4 class="scores__bot">Бот: 5</h4>
+    <h4 class="scores__player">
+      Вы: {{ this.getPlayerScore }}
+    </h4>
+    <h4 class="scores__delimeter">
+      /
+    </h4>
+    <h4 class="scores__bot">
+      Бот: {{ this.getBotScore }}
+    </h4>
+    <ResultGameModal ref="modal" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import ResultGameModal from '../modals/ResultGameModal.vue';
 export default {
-  name: "GameScores"
+  name: "GameScores",
+  components: {
+    ResultGameModal
+  },
+  computed: {
+    ...mapGetters('game_engine', [
+      'getEngine',
+    ]),
+
+    getPlayerScore() {
+      return this.getEngine.player.gameScore;
+    },
+
+    getBotScore () {
+      return this.getEngine.bot.gameScore;
+    }
+  },
+
+  updated() {
+    if (this.getEngine.getWinner()) {
+      this.$refs.modal.show = true
+    }
+  }
 }
 </script>
 

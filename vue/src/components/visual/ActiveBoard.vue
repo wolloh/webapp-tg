@@ -2,7 +2,7 @@
   <div class="board">
     <div class="board__cards">
       <GameCard 
-        v-for="(card, i) in cards"
+        v-for="(card, i) in getCardsOnBoard"
         :key="i"
         :card="card"
         :on-board="true"
@@ -14,6 +14,7 @@
 
 <script>
 import GameCard from './GameCard.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: "ActiveBoard",
@@ -25,6 +26,11 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  computed: {
+    ...mapGetters('game_engine', [
+      'getCardsOnBoard',
+    ]),
   }
 }
 </script>
