@@ -34,20 +34,14 @@ export default {
 
   computed: {
     ...mapGetters("game_engine", ["getEngine"]),
-    
+
     getResultMessage() {
-      if (this.getEngine.winner === WinnerStates.PLAYER_WINS) {
-        return "Вы выиграли!";
-      } 
-      else if (this.getEngine.winner === WinnerStates.BOT_WINS) {
-        return "Противник выиграл!";
-      } 
-      else if (this.getEngine.winner === WinnerStates.DRAW) {
-        return "Ничья!";
-      } 
-      else {
-        return "Ошибка";
-      }
+      let resultObj = {}
+      resultObj[WinnerStates.PLAYER_WINS] = 'Вы выиграли!';
+      resultObj[WinnerStates.BOT_WINS] = 'Противник выиграл!';
+      resultObj[WinnerStates.DRAW] = 'Ничья!';
+
+      return resultObj[this.getEngine.winner];
     },
   },
 
