@@ -4,7 +4,7 @@
       <div class="status-header__content__group">
         <GameScores class="status-header__content__group__scores" />
         <h1 class="status-header__content__group__game-status">
-          {{ getWinner == statePlayer ? 'Ваш ход' : 'Ход бота' }}
+          {{ getTurn == statePlayer ? 'Ваш ход' : 'Ход бота' }}
         </h1>
       </div>
       <svg 
@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     ...mapGetters('gameEngine', [
-      'getWinner',
+      'getTurn',
     ]),
     statePlayer() {
       return TurnStates.PLAYER
