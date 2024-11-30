@@ -28,7 +28,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('game_engine', [
+    ...mapGetters('gameEngine', [
       'getCardsOnBoard',
     ]),
   }

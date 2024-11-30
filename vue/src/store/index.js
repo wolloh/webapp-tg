@@ -1,5 +1,5 @@
 import modals from './modals'
-import game_engine from './game_engine'
+import gameEngine from './game-engine'
 
 export default {
   namespaced: true,
@@ -8,6 +8,6 @@ export default {
   mutations: {},
   modules: {
     modals,
-    game_engine,
+    gameEngine,
   }
 }

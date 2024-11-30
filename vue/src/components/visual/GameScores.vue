@@ -1,13 +1,13 @@
 <template>
   <div class="scores">
     <h4 class="scores__player">
-      Вы: {{ this.getPlayerScore }}
+      Вы: {{ getPlayerScore }}
     </h4>
     <h4 class="scores__delimeter">
       /
     </h4>
     <h4 class="scores__bot">
-      Бот: {{ this.getBotScore }}
+      Бот: {{ getBotScore }}
     </h4>
     <ResultGameModal v-if="gameEnded" ref="modal" />
   </div>
@@ -23,24 +23,17 @@ export default {
     ResultGameModal
   },
   computed: {
-    ...mapGetters('game_engine', [
-      'getEngine',
+    ...mapGetters('gameEngine', [
+      'getPlayerScore',
+      'getBotScore',
+      'getWinner'
     ]),
-
-    getPlayerScore() {
-      return this.getEngine.player.gameScore;
-    },
-
-    getBotScore () {
-      return this.getEngine.bot.gameScore;
-    },
     gameEnded() {
-      return this.getEngine.winner != WinnerStates.NONE;
+      return this.getWinner != WinnerStates.NONE;
     }
   },
-
   updated() {
-    if (this.getEngine.winner != WinnerStates.NONE) {
+    if (this.getWinner != WinnerStates.NONE) {
       this.$refs.modal.show = true
     }
   }

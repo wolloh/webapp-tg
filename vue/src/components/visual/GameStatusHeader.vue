@@ -4,7 +4,7 @@
       <div class="status-header__content__group">
         <GameScores class="status-header__content__group__scores" />
         <h1 class="status-header__content__group__game-status">
-          {{ getEngine.turn == statePlayer ? 'Ваш ход' : 'Ход бота' }}
+          {{ getWinner == statePlayer ? 'Ваш ход' : 'Ход бота' }}
         </h1>
       </div>
       <svg 
@@ -23,23 +23,26 @@
 <script>
 import { TurnStates } from '@/core/constants';
 import GameScores from './GameScores.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 export default {
   name: "GameStatus",
   components: {
     GameScores
   },
   computed: {
-    ...mapGetters('game_engine', [
-      'getEngine',
+    ...mapGetters('gameEngine', [
+      'getWinner',
     ]),
     statePlayer() {
       return TurnStates.PLAYER
     }
   },
   methods: {
+    ...mapActions('gameEngine', [
+      'startNewGame'
+    ]),
     restartGame() {
-      this.getEngine.startNewGame()
+      this.startNewGame()
       this.show = false
     }
   }

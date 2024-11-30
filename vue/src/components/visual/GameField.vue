@@ -18,7 +18,7 @@ export default {
     ActiveBoard
   },
   computed: {
-    ...mapGetters('game_engine', [
+    ...mapGetters('gameEngine', [
       'getPlayerCards',
       'getBotCards',
       'getCardsOnBoard',
