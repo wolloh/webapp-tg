@@ -55,6 +55,7 @@ export class GameEngine {
     CheckIfSomeOneWin() {
         if(this.player.cards.length == 0) {
             this.winner = this.findWinner();
+            this.clearBoard();
             return;
         }
 
