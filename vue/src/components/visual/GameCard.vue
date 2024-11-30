@@ -2,7 +2,7 @@
   <div 
     class="card" 
     :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard }"
-    @click="() => makePlayerMove()"
+    @click="() => makeMove()"
   >
     <div 
       v-if="!faceDown" 
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: "GameCard",
@@ -47,14 +47,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('game_engine', [
-      'getEngine',
+    ...mapGetters('gameEngine', [
+      'getTurn'
     ])
   },
   methods: {
-    async makePlayerMove() {
-      if (!this.faceDown && !this.onBoard && this.getEngine.turn ) {        
-        await this.getEngine.makePlayerMove(this.card.id)
+    ...mapActions('gameEngine', [
+      'makePlayerMove'
+    ]),
+    async makeMove() {
+      if (!this.faceDown && !this.onBoard && this.getTurn) {        
+        await this.makePlayerMove(this.card.id)
       }
     }
   }

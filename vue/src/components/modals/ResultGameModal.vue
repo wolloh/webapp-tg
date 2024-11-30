@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { WinnerStates } from "@/core/constants";
 import ModalComponent from "@/components/parts/Modal";
 
@@ -31,23 +31,25 @@ export default {
       show: false,
     };
   },
-
   computed: {
-    ...mapGetters("game_engine", ["getEngine"]),
-
+    ...mapGetters('gameEngine', [
+      'getWinner'
+    ]),
     getResultMessage() {
       let resultObj = {}
       resultObj[WinnerStates.PLAYER_WINS] = 'Вы выиграли!';
       resultObj[WinnerStates.BOT_WINS] = 'Противник выиграл!';
       resultObj[WinnerStates.DRAW] = 'Ничья!';
 
-      return resultObj[this.getEngine.winner];
+      return resultObj[this.getWinner];
     },
   },
-
   methods: {
+    ...mapActions('gameEngine', [
+      'startNewGame'
+    ]),
     restartGame() {
-      this.getEngine.startNewGame();
+      this.startNewGame();
       this.show = false;
     },
   },
