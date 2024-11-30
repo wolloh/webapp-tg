@@ -52,7 +52,7 @@ export class GameEngine {
         setTimeout(() => this.CheckIfSomeOneWin(), 1000);
     }
 
-    CheckIfSomeOneWin() {
+    checkIfSomeOneWin() {
         if(this.player.cards.length == 0) {
             this.winner = this.findWinner();
             this.clearBoard();
