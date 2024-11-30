@@ -1,5 +1,4 @@
 <template>
-  <div div v-if="show">
     <ModalComponent>
       <div class="result-modal">
         <h2 class="result-text">
@@ -13,7 +12,6 @@
         </button>
       </div>
     </ModalComponent>
-  </div>
 </template>
 
 <script>
@@ -26,11 +24,10 @@ export default {
   components: {
     ModalComponent,
   },
-  data() {
-    return {
-      show: false,
-    };
+  props: {
+    params: Object
   },
+
   computed: {
     ...mapGetters('gameEngine', [
       'getWinner'
@@ -44,13 +41,15 @@ export default {
       return resultObj[this.getWinner];
     },
   },
+
   methods: {
     ...mapActions('gameEngine', [
       'startNewGame'
     ]),
+    
     restartGame() {
       this.startNewGame();
-      this.show = false;
+      this.$emit('close');
     },
   },
 };

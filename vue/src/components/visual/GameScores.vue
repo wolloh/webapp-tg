@@ -9,32 +9,36 @@
     <h4 class="scores__bot">
       Бот: {{ getBotScore }}
     </h4>
-    <ResultGameModal v-if="gameEnded" ref="modal" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import ResultGameModal from '../modals/ResultGameModal.vue';
 import { WinnerStates } from '@/core/constants';
+import { reasltGameModal } from '@/mixins/modals';
+
 export default {
   name: "GameScores",
-  components: {
-    ResultGameModal
-  },
+
+  mixins: [reasltGameModal],
+
   computed: {
     ...mapGetters('gameEngine', [
       'getPlayerScore',
       'getBotScore',
       'getWinner'
     ]),
+
     gameEnded() {
       return this.getWinner != WinnerStates.NONE;
     }
   },
-  updated() {
-    if (this.getWinner != WinnerStates.NONE) {
-      this.$refs.modal.show = true
+
+  watch: {
+    gameEnded(ended) {
+      if(ended) {
+        this.openResultGameModal();
+      }
     }
   }
 }
