@@ -2,7 +2,7 @@
   <div 
     class="card" 
     :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard }"
-    @click="makePlayerMove()"
+    @click="() => makePlayerMove()"
   >
     <div 
       v-if="!faceDown" 
