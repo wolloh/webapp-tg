@@ -55,9 +55,9 @@ export default {
     ...mapActions('gameEngine', [
       'makePlayerMove'
     ]),
-    async makeMove() {
+    makeMove() {
       if (!this.faceDown && !this.onBoard && this.getTurn) {        
-        await this.makePlayerMove(this.card.id)
+        this.makePlayerMove(this.card.id)
       }
     }
   }

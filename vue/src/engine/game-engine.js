@@ -1,6 +1,5 @@
 import { Player } from './player';
 import { DECK, WinnerStates, TurnStates, MAX_CARDS_IN_HAND, POINTS_TO_WIN } from '@/core/constants';
-import { sleep } from '@/core/utils';
 
 export class GameEngine {
     instance;
@@ -10,32 +9,36 @@ export class GameEngine {
     turn = TurnStates.PLAYER;
     winner = WinnerStates.NONE;
 
-    constructor(){ 
+    constructor() { 
        this.instance = this;
-       let shuffledCards = this.shuffleCards(DECK);
+       const shuffledCards = this.shuffleCards(DECK);
        this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
-       let botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
+       const botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
        this.bot.cards = botCards.toSorted((a,b) => a.rank < b.rank ? 1 : -1);
     }
 
-    getInstance(){
+    getInstance() {
         return this.instance || new GameEngine();
     }
 
-    async makePlayerMove(cardId){
+    makePlayerMove(cardId) {
         if(this.turn == TurnStates.BOT){
             return;
         }
 
         this.board.push(this.player.cards.find(card => card.id == cardId));
 
-        let playerCard = this.player.playCard(cardId);
+        this.player.playCard(cardId);
 
         this.turn = TurnStates.BOT;
 
-        await sleep(1000);
+        setTimeout(() => this.makeBotMove(), 1000);
+    }
 
-        let botCard = await this.makeBotMove();
+    makeBotMove() {
+        this.turn = TurnStates.BOT
+        const botCard = this.bot.cards.shift();
+        const playerCard = this.board[0]
 
         if(playerCard.rank > botCard.rank){
             this.player.gameScore++;
@@ -44,22 +47,12 @@ export class GameEngine {
             this.bot.gameScore++;
         }
 
-        await sleep(1500);
-
-        this.CheckIfSomeOneWin();
-        this.turn = TurnStates.PLAYER;
-        this.clearBoard();
-    }
-
-    async makeBotMove(){
-        this.turn = TurnStates.BOT
-        let botCard = this.bot.cards.shift();
         this.board.push(botCard);
 
-        return botCard;
+        setTimeout(() => this.CheckIfSomeOneWin(), 1000);
     }
 
-    CheckIfSomeOneWin(){
+    CheckIfSomeOneWin() {
         if(this.player.cards.length == 0) {
             this.winner = this.findWinner();
             return;
@@ -72,6 +65,9 @@ export class GameEngine {
         if(this.bot.gameScore == POINTS_TO_WIN){
             this.winner = WinnerStates.BOT_WINS;
         }
+
+        this.turn = TurnStates.PLAYER;
+        this.clearBoard();
     }
 
     findWinner() {
@@ -88,19 +84,18 @@ export class GameEngine {
         }
     }
 
-    startNewGame(){
+    startNewGame() {
         this.player = new Player();
         this.bot = new Player();
-        let shuffledCards = this.shuffleCards(DECK);
+        const shuffledCards = this.shuffleCards(DECK);
 
         this.player.cards = shuffledCards.slice(0, MAX_CARDS_IN_HAND);
-        let botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
+        const botCards = shuffledCards.slice(MAX_CARDS_IN_HAND, shuffledCards.length);
         this.bot.cards = botCards.toReversed();
         this.winner = WinnerStates.NONE;
         this.turn = TurnStates.PLAYER;
     }
 
-    
     clearBoard(){
         this.board = [];
     }
