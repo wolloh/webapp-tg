@@ -15,12 +15,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import { WinnerStates } from '@/core/constants';
-import { reasltGameModal } from '@/mixins/modals';
+import { resultGameModal } from '@/mixins/modals';
 
 export default {
   name: "GameScores",
 
-  mixins: [reasltGameModal],
+  mixins: [resultGameModal],
 
   computed: {
     ...mapGetters('gameEngine', [

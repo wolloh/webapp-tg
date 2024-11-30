@@ -1,7 +1,7 @@
 import { mapMutations } from "vuex";
 import ResultGameModal from "@/components/modals/ResultGameModal.vue";
 
-export const reasltGameModal = {
+export const resultGameModal = {
 
   methods: {
     ...mapMutations('modals', [
