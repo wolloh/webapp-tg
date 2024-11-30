@@ -1,21 +1,16 @@
 <template>
-  <div class="game">
-    <GameStatus />
-    <GameField />
+  <div>
+    <RouterView />
     <ModalContainer />
   </div>
 </template>
 
 <script>
 import ModalContainer from "@/components/parts/ModalContainer";
-import GameField from "./visual/GameField.vue";
-import GameStatus from "./visual/GameStatusHeader.vue";
 
 export default {
   components: {
-    ModalContainer,
-    GameField,
-    GameStatus
+    ModalContainer
   }
 }
 </script>
@@ -42,14 +37,5 @@ h1, h3, h5 {
 
 h2, h4 {
   font-family: "Neucha", cursive;
-}
-
-.game {
-  width: 100%;
-  height: 100vh;
-  min-width: 302px;
-  min-height: 438px;
-  display: flex;
-  flex-direction: column;
 }
 </style>

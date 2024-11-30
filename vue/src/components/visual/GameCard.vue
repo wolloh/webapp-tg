@@ -118,7 +118,7 @@ export default {
   }
 }
 
-@media(max-width: 1015px) or (max-height: 766px) {
+@media(max-width: 1015px) {
   .card {
     min-height: 133px;
     max-height: 380px;
@@ -149,7 +149,7 @@ export default {
   }
 }
 
-@media(max-width: 560px) or (max-height: 580px) {
+@media(max-width: 560px) {
   .card {
     min-height: 96px;
     max-height: 210px;

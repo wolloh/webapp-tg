@@ -50,7 +50,7 @@ export default {
   }
 }
 
-@media(max-width: 560px) or (max-height: 580px) {
+@media(max-width: 560px) {
   .player {
     padding: 10px 15px;
 
