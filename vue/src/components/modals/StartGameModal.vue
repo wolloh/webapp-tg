@@ -30,9 +30,11 @@
 import { mapActions } from "vuex";
 import ModalComponent from "@/components/parts/Modal";
 import UserRating from "../parts/UserRating.vue";
+import { gameModals } from "@/mixins/modals";
 
 export default {
   name: "StartGameModal",
+  mixins: [gameModals],
   components: {
     ModalComponent,
     UserRating
@@ -114,8 +116,21 @@ export default {
       'startNewGame'
     ]),
 
+    checkSubscribe() {
+      //TODO: сделать проверку пользователя
+      let check = false
+      return check;
+    },
+
     startGame() {
-      this.startNewGame();
+      let subscribe = this.checkSubscribe();
+
+      if (subscribe) {
+        this.startNewGame();
+      }
+      else {
+        this.openNoSubscriptionModal();
+      }
       this.$emit('close');
     },
 
