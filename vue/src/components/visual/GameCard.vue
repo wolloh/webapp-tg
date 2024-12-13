@@ -156,6 +156,7 @@ export default {
   .card {
     min-height: 96px;
     max-height: 210px;
+    z-index: 0;
 
     &__content {
       font-size: 20px;
@@ -169,8 +170,10 @@ export default {
       margin-bottom: -32px;
 
       &:hover {
-        min-height: 100px;
-        max-height: 350px;
+        z-index: 0;
+        min-height: 96px;
+        max-height: 210px;
+        margin-top: 4px;
       }
     }
 
