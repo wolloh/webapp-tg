@@ -8,3 +8,10 @@ services:
         volumes:
             - ./vue/src:/vue/src
             - ./vue/package.json:/vue/package.json
+    backend:
+        build: ./express
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./express/src:/express/src
+            - ./express/package.json:/express/package.json
