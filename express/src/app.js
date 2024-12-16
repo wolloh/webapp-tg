@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import TelegramBot from 'node-telegram-bot-api'
 import cors from 'cors'
 
-const token = '7214812115:AAG3SKiB1G4CZP1AkXrJkZyOWqlMd9_JXUY'
+const token = ''
 const bot = new TelegramBot(token, {
 
   polling: true
