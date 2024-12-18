@@ -3,7 +3,7 @@
     <div class="start-modal scroll-modal">
       <div v-if="!ratingClicked">
         <h2 class="start-modal__welcome">
-          Добро пожаловать!
+          Добро пожаловать, {{ this.getFirstName }}!
         </h2>
         <button class="button-green" @click="() => startGame()">
           Новая игра
@@ -20,14 +20,15 @@
         >
           <path d="M19 12H6M12 5l-7 7 7 7" />
         </svg>
-        <UserRating title="Топ-10 игроков" :users="sortedRating" />
+        <UserRating title="Топ-10 игроков" />
       </div>
     </div>
   </ModalComponent>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import axios from 'axios'
+import { mapActions, mapGetters } from "vuex";
 import ModalComponent from "@/components/parts/Modal";
 import UserRating from "../parts/UserRating.vue";
 import { gameModals } from "@/mixins/modals";
@@ -46,84 +47,53 @@ export default {
   },
   props: {
     params: Object,
-    ratingUsers: {
-      type: Array,
-      // default: () => []
-      default() {
-        return [
-          {
-            name: "Семен",
-            scores: 10,
-            position: 4
-          },
-          {
-            name: "kkkkkk",
-            scores: 25,
-            position: 3
-          },
-          {
-            name: "Фёдор",
-            scores: 1210,
-            position: 1
-          },
-          {
-            name: "superBigDickGun",
-            scores: 2,
-            position: 5
-          },
-          {
-            name: "Елена Королёва",
-            scores: 121,
-            position: 2
-          },
-          {
-            name: "Семен",
-            scores: 12,
-            position: 4
-          },
-          {
-            name: "kkkkkk",
-            scores: 25,
-            position: 3
-          },
-          {
-            name: "Фёдор",
-            scores: 1210,
-            position: 1
-          },
-          {
-            name: "superBigDickGun",
-            scores: 10,
-            position: 5
-          },
-          {
-            name: "Елена Королёва",
-            scores: 121,
-            position: 2
-          }
-        ]
-      }
-    }
+  },
+  mounted() {
+    this.authorize()
   },
   computed: {
-    sortedRating() {
-      const copy = this.ratingUsers
-      return copy.sort((a, b) => b.scores - a.scores)
-    }
+    ...mapGetters('userData', [
+      'getUserId',
+      'getUsername',
+      'getFirstName'
+    ]),
+
   },
   methods: {
     ...mapActions('gameEngine', [
       'startNewGame'
     ]),
 
-    checkSubscribe() {
-      //TODO: сделать проверку пользователя
-      let check = false
-      return check;
+    async checkSubscribtion() {
+      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
+      await axios.get(`/check-subscription/${this.getUserId}`)
+      .then(response => {
+        return response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    },
+
+    async authorize() {
+      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
+      await axios.post(
+        '/authorize', 
+        {
+          id: this.getUserId,
+          username: this.getUsername
+        }
+      )
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
 
     startGame() {
-      let subscribe = this.checkSubscribe();
+      let subscribe = this.checkSubscribtion();
 
       if (subscribe) {
         this.startNewGame();

@@ -18,7 +18,7 @@ import { hostname } from 'os';
 app.use(bodyParser.json())
 app.use(cors())
 
-app.get('/getLeaders', async (req, response) => {
+app.get('/get-leaders', async (req, response) => {
   let userRepository = new UserRepository(connection)
 
   let users = await userRepository.getLeaders()

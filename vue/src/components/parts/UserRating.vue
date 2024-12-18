@@ -11,10 +11,10 @@
         <h4>Победы</h4>
       </div>
 
-      <div v-for="user, i in users.slice(0, -1)" :key="i" class="rating__table__user row">
+      <div v-for="user, i in sortedRating.slice(0, -1)" :key="i" class="rating__table__user row">
         <h4>{{ i + 1 }}</h4>
-        <h4>{{ user.name }}</h4>
-        <h4>{{ user.scores }}</h4>
+        <h4>{{ user['username'] }}</h4>
+        <h4>{{ user['games_win'] }}</h4>
       </div>
 
       <div v-if="!currentUserInRating10" class="row row--blank">
@@ -22,9 +22,9 @@
       </div>
 
       <div class="rating__table__user row row--last">
-        <h4>{{ users.at(-1).position }}</h4>
-        <h4>{{ users.at(-1).name }}</h4>
-        <h4>{{ users.at(-1).scores }}</h4>
+        <h4>{{ sortedRating.at(-1).position }}</h4>
+        <h4>{{ sortedRating.at(-1)['username']}}</h4>
+        <h4>{{ sortedRating.at(-1)['games_win'] }}</h4>
       </div>
     </div>
 
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: "UserRating",
   props: {
@@ -42,10 +44,14 @@ export default {
       type: String,
       default: "Рейтинг игроков"
     },
-    users: {
-      type: Array,
-      default: () => []
+  },
+  data() {
+    return {
+      users: () => []
     }
+  },
+  mounted() {
+    this.getLeaders()
   },
   computed: {
     ratingIsNotEmpty() {
@@ -53,7 +59,23 @@ export default {
     },
     currentUserInRating10() {
       return this.users.length <= 10
+    },
+    sortedRating() {
+      const copy = this.users
+      return copy.sort((a, b) => b['games_win'] - a['games_win'])
     }
+  },
+  methods: {
+    async getLeaders(){
+      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
+      await axios.get('/get-leaders')
+        .then(response => {
+          this.users = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
   }
 }
 </script>
