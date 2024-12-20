@@ -4,7 +4,7 @@ services:
     vue:
         build: ./vue
         ports:
-            - "9999:8080"
+            - "8080:8080"
         volumes:
             - ./vue/src:/vue/src
             - ./vue/package.json:/vue/package.json
@@ -14,7 +14,7 @@ services:
     backend:
         build: ./express
         ports:
-            - "8001:8001"
+            - "8002:8001"
         volumes:
             - ./express/src:/express/src
             - ./express/package.json:/express/package.json
