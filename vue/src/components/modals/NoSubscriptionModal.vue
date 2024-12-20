@@ -4,24 +4,18 @@
       <svg 
           class="no-subscription-modal__icon-back" 
           viewBox="0 0 36 36" 
-          @click="() => back()"
-        >
+          @click="() => back()">
           <path d="M19 12H6M12 5l-7 7 7 7" />
         </svg>
       <h2 class="no-subscription-modal__title">
-        {{messageTitle}}
+        Подписка отсутсвует!
       </h2>
-      <p id="modalBodyText" class="no-subscription-modal__body">
-        {{ messageBody}}
+      <p class="no-subscription-modal__body">
+        Чтобы начать игру вам необходимо подписаться на наш Telegram канал. Приложение при этом будет закрыто.
       </p>
-      <div class="no-subscription-modal__button-container">
-        <button class="no-subscription-modal__button-container__button" @click="() => subscribe()">
-          Подписаться
-        </button>
-        <button class="no-subscription-modal__button-container__button" @click="() => checkSubscribeButton()">
-          Я уже подписан
-        </button>
-      </div>
+      <button class="no-subscription-modal__button" @click="() => subscribe()">
+        Подписаться
+      </button>
     </div>
   </ModalComponent>
 </template>
@@ -44,40 +38,16 @@ export default {
     params: Object
   },
 
-  data() {
-    return {
-      messageTitle: "Подписка отсутствует!",
-      messageBody: "Чтобы начать игру вам ниобходимо подписаться на наш Telegram канал"
-    };
-  },
-
   methods: {
     ...mapActions('gameEngine', [
       'startNewGame'
     ]),
 
-    checkSubscribe() {
-      //TODO: сделать проверку пользователя
-      let check = false
-      return check;
-    },
-
     subscribe() {
-      const telegramUrl = "https://t.me/happywolf69";
+      const telegramUrl = "https://t.me/MiniAppCardGame";
       window.open(telegramUrl, "_blank");
-    },
-
-    checkSubscribeButton() {
-      let subscribe = this.checkSubscribe();
-
-      if (subscribe) {
-        this.startNewGame();
-        this.$emit('close');
-      }
-      else {
-        this.messageTitle = "Подписка всё ещё отсутствует!"
-        this.messageBody = "Ваша подписка не найдена. Если вы считаете, что эта ошибка, обратитесь в службу поддержки";
-      }
+      this.openStartGameModal();
+      this.$emit('close');
     },
     
     back() {
@@ -103,6 +73,21 @@ export default {
   text-align: center;
   transform: translate(-50%, -50%);
   
+  @media(max-width: 860px) {
+    width: 390px;
+  }
+
+  @media(max-width: 540px) {
+    min-width: 300px;
+    max-width: 362px;
+    padding: 33px 15px 41px 15px;
+    box-sizing: border-box;
+  }
+
+  @media(max-width: 370px) {
+    max-width: 342px;
+  }
+  
   &__icon-back {
     width: 36px;
     height: 36px;
@@ -122,19 +107,17 @@ export default {
     font-style: normal;
     color: #000000;
     margin: 0;
+
+    @media(max-width: 540px) {
+      font-size: 28px;
+    }
   }
 
   &__body {
     font-family: "Neucha", cursive;
   }
 
-  &__button-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-    
-    &__button {
+  &__button {
       padding: 10px 15px;
       background-color: #216652;
       border: solid 2px #216652;
@@ -142,9 +125,15 @@ export default {
       color: #ffffff;
       font-size: 16px;
       cursor: pointer;
-      font-family: "Neucha", cursive
+      font-family: "Neucha", cursive;
+
+      @media(max-width: 540px) {
+        font-size: 24px;
+        box-sizing: border-box;
+        width: 260px;
+        margin-top: 12px;
+      }
     }
-  }
 }
 
 </style>
