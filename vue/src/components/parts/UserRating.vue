@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     async getLeaders(){
-      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
+      axios.defaults.baseURL = 'http://' + process.env.VUE_APP_SERVER_IP + ':8001/' // TODO: move to config
       await axios.get('/get-leaders')
         .then(response => {
           this.users = response.data

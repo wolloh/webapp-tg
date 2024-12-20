@@ -28,10 +28,10 @@
 
 <script>
 import axios from 'axios'
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import ModalComponent from "@/components/parts/Modal";
 import UserRating from "../parts/UserRating.vue";
-import { gameModals } from "@/mixins/modals";
+import {gameModals} from "@/mixins/modals";
 
 export default {
   name: "StartGameModal",
@@ -65,7 +65,8 @@ export default {
     ]),
 
     async checkSubscribtion() {
-      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
+      console.log(process.env.SERVER_IP)
+      axios.defaults.baseURL = 'http://' + process.env.VUE_APP_SERVER_IP + ':8001/' // TODO: move to config
       await axios.get(`/check-subscription/${this.getUserId}`)
       .then(response => {
         return response.data
@@ -76,7 +77,7 @@ export default {
     },
 
     async authorize() {
-      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
+      axios.defaults.baseURL = 'http://' + process.env.VUE_APP_SERVER_IP + ':8001/' // TODO: move to config
       await axios.post(
         '/authorize', 
         {

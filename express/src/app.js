@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import TelegramBot from 'node-telegram-bot-api'
 import cors from 'cors'
 
-const token = ''
+const token = '7214812115:AAG3SKiB1G4CZP1AkXrJkZyOWqlMd9_JXUY'
 const bot = new TelegramBot(token, {
 
   polling: true
@@ -45,5 +45,5 @@ app.get('/check-subscription/:id', async (req, res) => {
   res.send(true)
 })
 
-app.listen(8000, '0.0.0.0', () => {
+app.listen(8001, '0.0.0.0', () => {
 })
