@@ -30,7 +30,7 @@ export default {
         const initData = window.Telegram.WebApp.initData
         const userData = this.parseInitData(initData).user
         try {
-          var response = await axiosInstance.post("/check-if-user-authenticated", {
+          const response = await axiosInstance.post("/check-if-user-authenticated", {
             initData: initData,
           });
           if (!response.data) {

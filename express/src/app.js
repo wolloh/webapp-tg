@@ -19,9 +19,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get("/get-leaders/:userId", async (req, response) => {
-  let userRepository = new UserRepository(connection);
+  const userRepository = new UserRepository(connection);
   const userId = req.params.userId;
-  let users = await userRepository.getLeadersWithUser(userId);
+  const users = await userRepository.getLeadersWithUser(userId);
   return response.send(JSON.stringify(users));
 });
 
@@ -56,8 +56,8 @@ app.get("/check-subscription/:userId", async (req, res) => {
 
 app.patch("/updateUserScore", async (req, response) => {
   const { userId } = req.body;
-  let userRepository = new UserRepository(connection);
-  let existingUser = await userRepository.getUserById(userId);
+  const userRepository = new UserRepository(connection);
+  const existingUser = await userRepository.getUserById(userId);
   if (existingUser == undefined) {
     console.log("Cannot update user score of non existed user");
     return response.status(400).send();

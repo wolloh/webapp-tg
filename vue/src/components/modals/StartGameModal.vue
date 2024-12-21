@@ -63,7 +63,7 @@ export default {
 
     async checkSubscription() {
       try {
-        var response = await axiosInstance.get(`/check-subscription/${this.getUserId}`)
+        const response = await axiosInstance.get(`/check-subscription/${this.getUserId}`)
         return response.data
       } catch (error) {
         console.log("Error when checking subscription " + error)
@@ -71,7 +71,7 @@ export default {
       }
     },  
     async startGame() {
-      let subscribe = await this.checkSubscription();
+      const subscribe = await this.checkSubscription();
       if (subscribe) {
         this.$emit('close');
         this.startNewGame();

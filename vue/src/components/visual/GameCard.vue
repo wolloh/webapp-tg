@@ -78,7 +78,6 @@ export default {
     ]),
     makeMove() {
       if (!this.faceDown && !this.onBoard && this.getTurn) {      
-        console.log(this.card.id)  
         this.makePlayerMove(this.card.id)
       }
     },
@@ -112,7 +111,7 @@ export default {
       if(!this.dragInfo.dragged) {
         this.dragInfo.dragged = true
 
-        var coords = this.getCoords(this.dragInfo.elem)
+        const coords = this.getCoords(this.dragInfo.elem)
         this.dragInfo.deltaX = this.dragInfo.xStart - coords.left
         this.dragInfo.deltaY = this.dragInfo.yStart - coords.top
 
@@ -122,7 +121,7 @@ export default {
       this.dragInfo.elem.style.top = event.pageY - this.dragInfo.deltaY + 'px'
     },
     getCoords(elem) {   
-      var box = elem.getBoundingClientRect()
+      const box = elem.getBoundingClientRect()
       return {
         top: box.top + window.scrollY,
         left: box.left + window.scrollX

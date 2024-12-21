@@ -59,7 +59,7 @@ export default {
 
     async checkSubscribe() {
       try {
-        var response = await axiosInstance.get(`/check-subscription/${this.getUserId}`)
+        const response = await axiosInstance.get(`/check-subscription/${this.getUserId}`)
         return response.data.isUserSubscribed
       } catch (error) {
         console.log("error on checking subscriptions front " + error)
@@ -73,7 +73,7 @@ export default {
     },
 
     checkSubscribeButton() {
-      let subscribe = this.checkSubscribe();
+      const subscribe = this.checkSubscribe();
 
       if (subscribe) {
         this.startNewGame();
