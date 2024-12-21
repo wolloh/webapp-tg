@@ -116,21 +116,8 @@ export default {
       'startNewGame'
     ]),
 
-    checkSubscribe() {
-      //TODO: сделать проверку пользователя
-      let check = false
-      return check;
-    },
-
     startGame() {
-      let subscribe = this.checkSubscribe();
-
-      if (subscribe) {
-        this.startNewGame();
-      }
-      else {
-        this.openNoSubscriptionModal();
-      }
+      this.startNewGame();
       this.$emit('close');
     },
 

@@ -17,9 +17,29 @@ export default {
     GameField,
     GameStatus
   },
+
   mounted() {
-    this.openStartGameModal()
+    
+    let subscribe = this.checkSubscribe();
+
+      if (subscribe) {
+        this.openStartGameModal();
+      }
+      else {
+        this.openNoSubscriptionModal();
+      }
+  },
+  
+  methods: {
+    checkSubscribe() {
+      //TODO: сделать проверку пользователя
+      let check = false
+      return check;
+    },
+
+
   }
+
 }
 </script>
 
