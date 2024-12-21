@@ -31,7 +31,7 @@ import { axiosInstance } from "@/http-helper/http-config";
 import { mapActions, mapGetters } from "vuex";
 import ModalComponent from "@/components/parts/Modal";
 import UserRating from "../parts/UserRating.vue";
-import { gameModals } from "@/mixins/modals";
+import {gameModals} from "@/mixins/modals";
 
 export default {
   name: "StartGameModal",
@@ -66,13 +66,12 @@ export default {
         var response = await axiosInstance.get(`/check-subscription/${this.getUserId}`)
         return response.data
       } catch (error) {
-        console.log("error on checking subscriptions front " + error)
+        console.log("Error when checking subscription " + error)
         return false;
       }
     },  
     async startGame() {
       let subscribe = await this.checkSubscription();
-      console.log('here' + subscribe)
       if (subscribe) {
         this.$emit('close');
         this.startNewGame();

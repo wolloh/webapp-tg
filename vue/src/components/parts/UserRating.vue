@@ -74,9 +74,8 @@ export default {
   methods: {
     async getLeaders(){
       try {
-        var response = await axiosInstance.get(`/get-leaders/${this.getUserId}`)
+        const response = await axiosInstance.get(`/get-leaders/${this.getUserId}`)
         this.users = response.data
-        console.log(response.data)
       } catch (error) {
         console.log(error)
       }

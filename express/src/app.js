@@ -41,7 +41,6 @@ app.post("/check-if-user-authenticated", async (req, response) => {
 
 app.get("/check-subscription/:userId", async (req, res) => {
   try {
-    console.log('id' + req.params.userId)
     const user = await bot.getChatMember(TELEGRAM_CHANNEL_ID, req.params.userId);
 
     if (user.status == "left" || user.status == "kicked") {
@@ -57,7 +56,6 @@ app.get("/check-subscription/:userId", async (req, res) => {
 
 app.patch("/updateUserScore", async (req, response) => {
   const { userId } = req.body;
-  console.log("UserId when updating " + userId);
   let userRepository = new UserRepository(connection);
   let existingUser = await userRepository.getUserById(userId);
   if (existingUser == undefined) {
