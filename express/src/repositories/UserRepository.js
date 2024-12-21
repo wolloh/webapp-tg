@@ -3,9 +3,17 @@ export default class UserRepository {
         this.dbConnection = dbConnection;
     }
 
-    async getLeaders() {
+    async getLeadersWithUser(userId) {
         return new Promise((resolve,reject) =>{
-            this.dbConnection.all('SELECT * FROM users ORDER BY games_win DESC LIMIT 10',[], (err,users) =>{
+            this.dbConnection.all(`
+        WITH ranking AS (
+        SELECT ROW_NUMBER() OVER (ORDER BY games_win DESC, user_id ASC, username ASC) as position, user_id, username, games_win
+        FROM users
+        ) 
+        SELECT * FROM ranking WHERE user_id = ?
+        UNION
+        SELECT * FROM (SELECT * FROM ranking LIMIT 10) ` 
+        ,[userId], (err,users) =>{
                 if (err) 
                     reject(err);
                 resolve(users);
@@ -14,7 +22,6 @@ export default class UserRepository {
     }
 
     async getUserById(id) {
-        console.log(id)
         return new Promise((resolve, reject) => {
             this.dbConnection.get('SELECT * FROM users WHERE user_id = ?', [id], (err, user) => {
                 if (err)
@@ -30,6 +37,16 @@ export default class UserRepository {
                 if (err)
                     reject(err);
                 resolve();
+            })
+        })
+    }
+
+    async updateUserScore(id) {
+        return new Promise((resolve, reject) => {
+            this.dbConnection.run('UPDATE users set games_win = games_win + 1 WHERE user_id = ?', [id], (err, user) => {
+                if (err)
+                    reject(err);
+                resolve(user);
             })
         })
     }

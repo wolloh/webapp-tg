@@ -2,7 +2,7 @@ export default {
   namespaced: true,
   state: {
     userData: {
-      id: 123, // TODO: change to null
+      id: null, // TODO: change to null
       username: "",
       first_name: "",
       last_name: ""
@@ -17,6 +17,7 @@ export default {
   mutations: {
     SET_USER_DATA: (state, payload) => {
       state.userData = payload
+      console.log(state.userData.id)
     },
   },
   actions: {

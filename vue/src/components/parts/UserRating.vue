@@ -35,7 +35,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { axiosInstance } from "@/http-helper/http-config";
+import { mapGetters } from 'vuex';
 
 export default {
   name: "UserRating",
@@ -54,6 +55,11 @@ export default {
     this.getLeaders()
   },
   computed: {
+    ...mapGetters('userData', [
+      'getUserId',
+      'getUsername',
+      'getFirstName'
+    ]),
     ratingIsNotEmpty() {
       return this.users.length != 0
     },
@@ -67,14 +73,13 @@ export default {
   },
   methods: {
     async getLeaders(){
-      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
-      await axios.get('/get-leaders')
-        .then(response => {
-          this.users = response.data
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      try {
+        var response = await axiosInstance.get(`/get-leaders/${this.getUserId}`)
+        this.users = response.data
+        console.log(response.data)
+      } catch (error) {
+        console.log(error)
+      }
     },
   }
 }

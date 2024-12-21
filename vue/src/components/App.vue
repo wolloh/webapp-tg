@@ -8,6 +8,7 @@
 <script>
 import { mapActions } from "vuex";
 import ModalContainer from "@/components/parts/ModalContainer";
+import { axiosInstance } from "@/http-helper/http-config";
 
 export default {
   components: {
@@ -25,9 +26,19 @@ export default {
       script.src = "https://telegram.org/js/telegram-web-app.js?56"
       document.head.appendChild(script)
 
-      script.onload = () => {
+      script.onload = async () => {
         const initData = window.Telegram.WebApp.initData
         const userData = this.parseInitData(initData).user
+        try {
+          var response = await axiosInstance.post("/check-if-user-authenticated", {
+            initData: initData,
+          });
+          if (!response.data) {
+            window.Telegram.WebApp.close();
+          }
+        } catch (error) {
+          console.log("Cannot verificate user");
+        }
         if (userData) {
           this.setUserData(userData)
         }

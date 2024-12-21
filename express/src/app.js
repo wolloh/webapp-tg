@@ -1,49 +1,72 @@
-import express from 'express';
-import bodyParser from 'body-parser'
-import TelegramBot from 'node-telegram-bot-api'
-import cors from 'cors'
+import express from "express";
+import bodyParser from "body-parser";
+import TelegramBot from "node-telegram-bot-api";
+import cors from "cors";
+import { isValid, parse } from "@telegram-apps/init-data-node";
 
-const token = ''
-const bot = new TelegramBot(token, {
-
-  polling: true
-  
+const BOT_TOKEN = '7214812115:AAG3SKiB1G4CZP1AkXrJkZyOWqlMd9_JXUY';
+const bot = new TelegramBot(BOT_TOKEN, {
+  polling: true,
 });
-const app = express()
-const port = 3000
-import UserRepository from './repositories/UserRepository.js';
-import connection from './database/DbConnection.js';
-import { hostname } from 'os';
+const app = express();
+const TELEGRAM_CHANNEL_ID = -1002329123996;
 
-app.use(bodyParser.json())
-app.use(cors())
 
-app.get('/get-leaders', async (req, response) => {
-  let userRepository = new UserRepository(connection)
+import UserRepository from "./repositories/UserRepository.js";
+import connection from "./database/DbConnection.js";
 
-  let users = await userRepository.getLeaders()
-  response.send(JSON.stringify(users))
-})
+app.use(bodyParser.json());
+app.use(cors());
 
-app.post('/authorize', async (req, response) => {
-  const requestData = req.body
-  let userId = requestData.id;
-  console.log(userId)
-  let userRepository = new UserRepository(connection)
-  let existingUser = await userRepository.getUserById(userId)
-  console.log(existingUser)
-  if(existingUser == undefined)
-    userRepository.addUser(requestData.id,requestData.username)
-  response.status(200).send()
-})
+app.get("/get-leaders/:userId", async (req, response) => {
+  let userRepository = new UserRepository(connection);
+  const userId = req.params.userId;
+  let users = await userRepository.getLeadersWithUser(userId);
+  return response.send(JSON.stringify(users));
+});
 
-app.get('/check-subscription/:id', async (req, res) => {
-  const user = await bot.getChatMember('-1002262995894', req.params.id)
-  console.log(user)
-  if(user.status == 'left' || user.status == 'kicked')
-    res.send(false)
-  res.send(true)
-})
+app.post("/check-if-user-authenticated", async (req, response) => {
+  const { initData } = req.body;
+  if (!isValid(initData, BOT_TOKEN)) {
+    return response.send({ isUserAuthenticated: false });
+  }
+  const parsedUserInfo = parse(initData);
+  const userId = parsedUserInfo.user.id;
+  const username = parsedUserInfo.user.username;
+  const userRepository = new UserRepository(connection);
+  const existingUser = await userRepository.getUserById(userId);
+  if (existingUser == undefined) userRepository.addUser(userId, username);
+  return response.status(200).send({ isUserAuthenticated: true });
+});
 
-app.listen(8000, '0.0.0.0', () => {
-})
+app.get("/check-subscription/:userId", async (req, res) => {
+  try {
+    console.log('id' + req.params.userId)
+    const user = await bot.getChatMember(TELEGRAM_CHANNEL_ID, req.params.userId);
+
+    if (user.status == "left" || user.status == "kicked") {
+      return res.status(400).send({ isUserSubscribed: false });
+    }
+  } catch (error) {
+    console.log("Error when checking user subscription " + error.message);
+    return res.status(400).send({ isUserSubscribed: false });
+  }
+
+  return res.status(200).send({ isUserSubscribed: true });
+});
+
+app.patch("/updateUserScore", async (req, response) => {
+  const { userId } = req.body;
+  console.log("UserId when updating " + userId);
+  let userRepository = new UserRepository(connection);
+  let existingUser = await userRepository.getUserById(userId);
+  if (existingUser == undefined) {
+    console.log("Cannot update user score of non existed user");
+    return response.status(400).send();
+  }
+
+  await userRepository.updateUserScore(userId);
+  return response.status(200).send();
+});
+
+app.listen(9992, "0.0.0.0", () => {});

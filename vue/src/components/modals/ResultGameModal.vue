@@ -36,65 +36,8 @@ export default {
     params: Object,
     ratingUsers: {
       type: Array,
-      // default: () => []
       default() {
-        return [
-          {
-            name: "Семен",
-            scores: 10,
-            position: 4
-          },
-          {
-            name: "kkkkkk",
-            scores: 25,
-            position: 3
-          },
-          {
-            name: "Фёдор",
-            scores: 1210,
-            position: 1
-          },
-          {
-            name: "superBigDickGun",
-            scores: 2,
-            position: 5
-          },
-          {
-            name: "Елена Королёва",
-            scores: 121,
-            position: 2
-          },
-          {
-            name: "Семен",
-            scores: 12,
-            position: 4
-          },
-          {
-            name: "kkkkkk",
-            scores: 25,
-            position: 3
-          },
-          {
-            name: "Фёдор",
-            scores: 1210,
-            position: 1
-          },
-          {
-            name: "superBigDickGun",
-            scores: 10,
-            position: 5
-          },
-          {
-            name: "Елена Королёва",
-            scores: 121,
-            position: 2
-          },
-          {
-            name: "Елена Королёва",
-            scores: 1,
-            position: 17
-          }
-        ]
+        return []
       }
     }
   },

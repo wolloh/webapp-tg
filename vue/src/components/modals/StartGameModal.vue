@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { axiosInstance } from "@/http-helper/http-config";
 import { mapActions, mapGetters } from "vuex";
 import ModalComponent from "@/components/parts/Modal";
 import UserRating from "../parts/UserRating.vue";
@@ -48,9 +48,6 @@ export default {
   props: {
     params: Object,
   },
-  mounted() {
-    this.authorize()
-  },
   computed: {
     ...mapGetters('userData', [
       'getUserId',
@@ -64,44 +61,25 @@ export default {
       'startNewGame'
     ]),
 
-    async checkSubscribtion() {
-      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
-      await axios.get(`/check-subscription/${this.getUserId}`)
-      .then(response => {
+    async checkSubscription() {
+      try {
+        var response = await axiosInstance.get(`/check-subscription/${this.getUserId}`)
         return response.data
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    },
-
-    async authorize() {
-      axios.defaults.baseURL = 'http://localhost:8000/' // TODO: move to config
-      await axios.post(
-        '/authorize', 
-        {
-          id: this.getUserId,
-          username: this.getUsername
-        }
-      )
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    },
-
-    startGame() {
-      let subscribe = this.checkSubscribtion();
-
+      } catch (error) {
+        console.log("error on checking subscriptions front " + error)
+        return false;
+      }
+    },  
+    async startGame() {
+      let subscribe = await this.checkSubscription();
+      console.log('here' + subscribe)
       if (subscribe) {
+        this.$emit('close');
         this.startNewGame();
       }
       else {
         this.openNoSubscriptionModal();
       }
-      this.$emit('close');
     },
 
     changeRatingFlag() {

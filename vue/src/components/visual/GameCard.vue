@@ -1,7 +1,8 @@
 <template>
   <div 
     class="card" 
-    :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard }"
+    :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard}"
+    draggable="true"
     @click="() => makeMove()"
   >
     <div 
@@ -46,6 +47,26 @@ export default {
       required: false
     }
   },
+  data() {
+    return {
+      dragInfo: {
+        elem: null,
+        xStart: null,
+        yStart: null,
+        deltaX: 0,
+        deltaY: 0,
+        dragged: false,
+      },
+      oldPosition: {
+        parent: null,
+        nextSibling: null,
+        position: null,
+        left: null,
+        top: null,
+        zIndex: null
+      }
+    }
+  },
   computed: {
     ...mapGetters('gameEngine', [
       'getTurn'
@@ -56,9 +77,100 @@ export default {
       'makePlayerMove'
     ]),
     makeMove() {
-      if (!this.faceDown && !this.onBoard && this.getTurn) {        
+      if (!this.faceDown && !this.onBoard && this.getTurn) {      
+        console.log(this.card.id)  
         this.makePlayerMove(this.card.id)
       }
+    },
+    checkMove(event) {
+      event.preventDefault()
+      if (this.faceDown || this.onBoard || !this.getTurn) {
+        return
+      }
+      console.log(event)
+      this.dragInfo.elem = event.currentTarget
+      this.dragInfo.xStart = event.clientX
+      this.dragInfo.yStart = event.clientY
+
+      const elem = this.dragInfo.elem
+      this.oldPosition = {
+        parent: elem.parentNode,
+        nextSibling: elem.nextSibling,
+        position: elem.position || '',
+        left: elem.left || '',
+        top: elem.top || '',
+        zIndex: elem.zIndex || ''
+      }
+
+      document.onmousemove = this.processDrag
+      document.onmouseup = this.stopDrag
+    },
+    processDrag(event) {
+      event.preventDefault()
+      if (!this.dragInfo.elem) return; 
+
+      if(!this.dragInfo.dragged) {
+        this.dragInfo.dragged = true
+
+        var coords = this.getCoords(this.dragInfo.elem)
+        this.dragInfo.deltaX = this.dragInfo.xStart - coords.left
+        this.dragInfo.deltaY = this.dragInfo.yStart - coords.top
+
+        this.startDrag(); // отобразить начало переноса
+      }
+      this.dragInfo.elem.style.left = event.pageX - this.dragInfo.deltaX + 'px'
+      this.dragInfo.elem.style.top = event.pageY - this.dragInfo.deltaY + 'px'
+    },
+    getCoords(elem) {   
+      var box = elem.getBoundingClientRect()
+      return {
+        top: box.top + window.scrollY,
+        left: box.left + window.scrollX
+      }
+    },
+    startDrag() {
+      const target = this.dragInfo.elem
+
+      document.body.appendChild(target)
+      target.style.zIndex = 9999
+      target.style.position = 'absolute'
+    },
+    stopDrag(event) {
+      event.preventDefault();
+      const dropElem = this.findDroppable(event)
+
+      if (dropElem) {
+        this.dragInfo.elem.style.display = 'none'
+        this.makeMove()
+      } else {
+        const old = this.oldPosition
+        old.parent.insertBefore(this.dragInfo.elem, old.nextSibling)
+        this.dragInfo.elem.style.position = old.position
+        this.dragInfo.elem.style.left = old.left
+        this.dragInfo.elem.style.top = old.top
+        this.dragInfo.elem.style.zIndex = old.zIndex
+      }
+      document.onmousemove = null
+      document.onmouseup = null
+      this.dragInfo.elem = null
+      this.dragInfo.dragged = false
+    },
+    findDroppable(event) {
+      // спрячем переносимый элемент
+      this.dragInfo.elem.hidden = true
+
+      // получить самый вложенный элемент под курсором мыши
+      const elem = document.elementFromPoint(event.clientX, event.clientY)
+      console.log('elem' + elem)
+
+      // показать переносимый элемент обратно
+      this.dragInfo.elem.hidden = false;
+
+      if (elem == null) {
+        return null;
+      }
+
+      return elem.closest('.droppable');
     }
   }
 }
