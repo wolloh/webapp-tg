@@ -1,9 +1,12 @@
 <template>
   <div 
     class="card" 
-    :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard}"
+    :class="{ 'card--face-down': faceDown, 'card--active': !faceDown && !onBoard }" 
     draggable="true"
-    @click="() => makeMove()"
+    @mousedown="(e) => checkMove(e)" 
+    @mousemove="(e) => processDrag(e)" 
+    @mouseup="(e) => stopDrag(e)"
+    @touchstart="makeMove()" 
   >
     <div 
       v-if="!faceDown" 
@@ -77,7 +80,7 @@ export default {
       'makePlayerMove'
     ]),
     makeMove() {
-      if (!this.faceDown && !this.onBoard && this.getTurn) {      
+      if (!this.faceDown && !this.onBoard && this.getTurn) {
         this.makePlayerMove(this.card.id)
       }
     },
@@ -86,11 +89,14 @@ export default {
       if (this.faceDown || this.onBoard || !this.getTurn) {
         return
       }
-      console.log(event)
-      this.dragInfo.elem = event.currentTarget
-      this.dragInfo.xStart = event.clientX
-      this.dragInfo.yStart = event.clientY
+      
+      this.dragInfo = {
+        elem: event.currentTarget,
+        xStart: event.clientX,
+        yStart: event.clientY
+      }
 
+      // сохраняем положение, с которого началось перетягивание, на случай отмены
       const elem = this.dragInfo.elem
       this.oldPosition = {
         parent: elem.parentNode,
@@ -100,15 +106,13 @@ export default {
         top: elem.top || '',
         zIndex: elem.zIndex || ''
       }
-
-      document.onmousemove = this.processDrag
-      document.onmouseup = this.stopDrag
     },
     processDrag(event) {
       event.preventDefault()
-      if (!this.dragInfo.elem) return; 
+      if (!this.dragInfo.elem) return;
 
-      if(!this.dragInfo.dragged) {
+      // перетаскивание относительно начальной позиции (элемент только начали перетаскивать)
+      if (!this.dragInfo.dragged) {
         this.dragInfo.dragged = true
 
         const coords = this.getCoords(this.dragInfo.elem)
@@ -117,10 +121,12 @@ export default {
 
         this.startDrag(); // отобразить начало переноса
       }
+
+      // продолжение перетаскивания
       this.dragInfo.elem.style.left = event.pageX - this.dragInfo.deltaX + 'px'
       this.dragInfo.elem.style.top = event.pageY - this.dragInfo.deltaY + 'px'
     },
-    getCoords(elem) {   
+    getCoords(elem) {
       const box = elem.getBoundingClientRect()
       return {
         top: box.top + window.scrollY,
@@ -135,22 +141,29 @@ export default {
       target.style.position = 'absolute'
     },
     stopDrag(event) {
-      event.preventDefault();
-      const dropElem = this.findDroppable(event)
+      event.preventDefault()
 
-      if (dropElem) {
-        this.dragInfo.elem.style.display = 'none'
-        this.makeMove()
-      } else {
+      // событие перетягивания
+      if (this.dragInfo.dragged) {
+        const dropElem = this.findDroppable(event) 
+
+        if (dropElem) { // карту перенесли на игровое поле
+          this.dragInfo.elem.style.display = 'none'
+          this.makeMove()
+        } 
         const old = this.oldPosition
         old.parent.insertBefore(this.dragInfo.elem, old.nextSibling)
-        this.dragInfo.elem.style.position = old.position
-        this.dragInfo.elem.style.left = old.left
-        this.dragInfo.elem.style.top = old.top
-        this.dragInfo.elem.style.zIndex = old.zIndex
+        this.dragInfo.elem.style = {
+          position: old.position,
+          left: old.left,
+          top: old.top,
+          zIndex: old.zIndex
+        }
+      // событие клика  
+      } else {
+        this.makeMove()
       }
-      document.onmousemove = null
-      document.onmouseup = null
+
       this.dragInfo.elem = null
       this.dragInfo.dragged = false
     },
@@ -160,7 +173,6 @@ export default {
 
       // получить самый вложенный элемент под курсором мыши
       const elem = document.elementFromPoint(event.clientX, event.clientY)
-      console.log('elem' + elem)
 
       // показать переносимый элемент обратно
       this.dragInfo.elem.hidden = false;
